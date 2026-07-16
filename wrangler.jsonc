@@ -21,27 +21,28 @@
 		{
 			"binding": "DB",
 			"database_name": "jlb-db",
-			"database_id": "REPLACE_WITH_D1_DATABASE_ID",
+			"database_id": "82757d15-0869-42b4-a580-34a2f2b4564f",
 			"migrations_dir": "migrations"
 		}
 	],
 
 	// R2 (object storage) — reserved for large media (press kit, hi-res photos)
-	// that shouldn't live in git.
-	// Create it:  npx wrangler r2 bucket create jlb-media
-	"r2_buckets": [
-		{
-			"binding": "MEDIA",
-			"bucket_name": "jlb-media"
-		}
-	],
+	// that shouldn't live in git. DISABLED until R2 is enabled in the Cloudflare
+	// dashboard (R2 → Enable). Then create the bucket and uncomment this block:
+	//   npx wrangler r2 bucket create jlb-media
+	// "r2_buckets": [
+	// 	{
+	// 		"binding": "MEDIA",
+	// 		"bucket_name": "jlb-media"
+	// 	}
+	// ],
 
 	// KV — backs the rate limiter on the public form endpoints.
 	// Create it:  npx wrangler kv namespace create RATE_LIMIT  → paste the id below.
 	"kv_namespaces": [
 		{
 			"binding": "RATE_LIMIT",
-			"id": "REPLACE_WITH_KV_NAMESPACE_ID"
+			"id": "cb636c4389614cf5a9d22116645f1f0c"
 		}
 	],
 
