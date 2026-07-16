@@ -1,0 +1,13 @@
+# Local-only SECRETS for `astro dev` and `wrangler` (loaded by platformProxy).
+#
+# Setup:
+#   1. Copy this file to `.dev.vars`   (that file is gitignored — never commit it)
+#   2. Fill in the real values below
+#
+# Non-secret config (site name, contact email, from address) lives in
+# wrangler.jsonc under "vars" — edit it there, not here.
+#
+# In PRODUCTION, set this secret with:  npx wrangler secret put RESEND_API_KEY
+# (or via the Cloudflare dashboard → Worker → Settings → Variables).
+
+RESEND_API_KEY=re_your_resend_api_key_here

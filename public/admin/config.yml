@@ -1,0 +1,102 @@
+# Sveltia CMS configuration. This drives the /admin editor your band uses.
+# Fields here MUST stay in sync with the schemas in src/content.config.ts.
+
+backend:
+  name: github
+  # TODO: set to your GitHub repo once it's pushed, e.g. willmalay/jlb-website
+  repo: REPLACE_GITHUB_OWNER/REPLACE_GITHUB_REPO
+  branch: main
+  # OAuth relay so editors can log in with GitHub. Deploy the sveltia-cms-auth
+  # Worker (see README → "CMS login") and paste its URL here.
+  base_url: https://REPLACE_WITH_SVELTIA_AUTH_WORKER
+
+# Uploaded images are committed to the repo here and referenced by this path.
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  # --- Site-wide settings (single file) ---
+  - name: settings
+    label: Site Settings
+    editor:
+      preview: false
+    files:
+      - name: site
+        label: Site
+        file: "src/data/site.json"
+        fields:
+          - { name: bandName, label: Band name, widget: string }
+          - { name: tagline, label: Tagline, widget: string }
+          - { name: bookingEmail, label: Booking email, widget: string }
+          - name: social
+            label: Social links
+            widget: object
+            fields:
+              - { name: instagram, label: Instagram URL, widget: string, required: false }
+              - { name: facebook, label: Facebook URL, widget: string, required: false }
+              - { name: youtube, label: YouTube URL, widget: string, required: false }
+              - { name: tiktok, label: TikTok URL, widget: string, required: false }
+          - name: streaming
+            label: Streaming links
+            widget: object
+            fields:
+              - { name: spotify, label: Spotify URL, widget: string, required: false }
+              - { name: appleMusic, label: Apple Music URL, widget: string, required: false }
+              - { name: bandcamp, label: Bandcamp URL, widget: string, required: false }
+              - { name: soundcloud, label: SoundCloud URL, widget: string, required: false }
+
+  # --- Shows / tour dates ---
+  - name: shows
+    label: Shows
+    label_singular: Show
+    folder: "src/content/shows"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{fields.venue}}"
+    identifier_field: venue
+    summary: "{{fields.date | date('yyyy-MM-dd')}} — {{fields.venue}}, {{fields.city}}"
+    sortable_fields: [date]
+    fields:
+      - { name: title, label: Event title, widget: string }
+      - name: date
+        label: Date & time
+        widget: datetime
+        format: "YYYY-MM-DDTHH:mm:ss"
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+      - { name: venue, label: Venue, widget: string }
+      - { name: city, label: City, widget: string }
+      - { name: ticketUrl, label: Ticket URL, widget: string, required: false }
+      - { name: price, label: Price, widget: string, required: false }
+      - { name: ageRestriction, label: Age restriction, widget: string, required: false }
+      - { name: soldOut, label: Sold out?, widget: boolean, default: false }
+      - { name: body, label: Details, widget: markdown, required: false }
+
+  # --- Photo gallery ---
+  - name: gallery
+    label: Gallery
+    label_singular: Photo
+    folder: "src/content/gallery"
+    create: true
+    slug: "{{fields.order}}-{{slug}}"
+    identifier_field: alt
+    summary: "{{fields.alt}}"
+    sortable_fields: [order]
+    fields:
+      - { name: image, label: Photo, widget: image }
+      - { name: alt, label: "Alt text (describe the photo)", widget: string }
+      - { name: caption, label: Caption, widget: string, required: false }
+      - { name: featured, label: Featured?, widget: boolean, default: false }
+      - { name: order, label: Sort order, widget: number, value_type: int, default: 0 }
+
+  # --- Long-form pages (About/bio, press, etc.) ---
+  - name: pages
+    label: Pages
+    label_singular: Page
+    folder: "src/content/pages"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: heroImage, label: Hero image, widget: image, required: false }
+      - { name: body, label: Body, widget: markdown }

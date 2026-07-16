@@ -1,0 +1,55 @@
+{
+	// Cloudflare Workers config. Source of truth for local dev (bindings are
+	// emulated by Astro's platformProxy) and for production deploys.
+	// Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "jlb-website",
+	"compatibility_date": "2026-07-16",
+	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
+	"main": "@astrojs/cloudflare/entrypoints/server",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	},
+
+	// D1 (SQLite) — mailing-list subscribers and contact messages.
+	// Create it:  npx wrangler d1 create jlb-db   → paste the returned id below.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "jlb-db",
+			"database_id": "REPLACE_WITH_D1_DATABASE_ID",
+			"migrations_dir": "migrations"
+		}
+	],
+
+	// R2 (object storage) — reserved for large media (press kit, hi-res photos)
+	// that shouldn't live in git.
+	// Create it:  npx wrangler r2 bucket create jlb-media
+	"r2_buckets": [
+		{
+			"binding": "MEDIA",
+			"bucket_name": "jlb-media"
+		}
+	],
+
+	// KV — backs the rate limiter on the public form endpoints.
+	// Create it:  npx wrangler kv namespace create RATE_LIMIT  → paste the id below.
+	"kv_namespaces": [
+		{
+			"binding": "RATE_LIMIT",
+			"id": "REPLACE_WITH_KV_NAMESPACE_ID"
+		}
+	],
+
+	// Non-secret config (safe to commit). Secrets like RESEND_API_KEY live in
+	// `.dev.vars` locally and `wrangler secret put` / the dashboard in production.
+	"vars": {
+		"PUBLIC_SITE_NAME": "JLB",
+		"CONTACT_TO_EMAIL": "REPLACE_WITH_DESTINATION_EMAIL",
+		"MAIL_FROM_EMAIL": "noreply@REPLACE_WITH_DOMAIN"
+	}
+}

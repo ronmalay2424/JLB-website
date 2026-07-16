@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" role="img" aria-label="Placeholder image">
+	<rect width="1200" height="800" fill="#1f2937"/>
+	<circle cx="600" cy="330" r="90" fill="#374151"/>
+	<rect x="380" y="470" width="440" height="60" rx="12" fill="#374151"/>
+	<text x="600" y="620" fill="#9ca3af" font-family="system-ui, sans-serif" font-size="34" text-anchor="middle">Replace me — add a real photo</text>
+</svg>
