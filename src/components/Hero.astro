@@ -15,38 +15,61 @@ const { variant = 'logo' } = Astro.props;
 	{variant === 'cinematic' && <div class="hero-bg hero-bg--cinematic" aria-hidden="true" />}
 	<div class="hero-overlay" aria-hidden="true" />
 
-	<div class="hero-content">
-		{variant === 'cinematic' ? (
-			<>
-				<img
-					class="hero-logo hero-logo--small"
-					src="/images/uploads/JLB_Logo.jpg"
-					alt=""
-					width="160"
-					height="126"
-					loading="eager"
-				/>
-				<h1 class="hero-name">{site.bandName}</h1>
-			</>
-		) : (
-			<>
-				<img
-					class="hero-logo"
-					src="/images/uploads/JLB_Logo.jpg"
-					alt={site.bandName}
-					width="420"
-					height="330"
-					loading="eager"
-				/>
-				<h1 class="visually-hidden">{site.bandName}</h1>
-			</>
-		)}
-		<p class="hero-tagline">{site.tagline}</p>
-		<div class="hero-actions">
-			<a class="btn btn--solid" href="/#shows">Upcoming shows</a>
-			<a class="btn" href="/#contact">Join the mailing list</a>
+	{/* photo variant: transparent logo up top, faces clear mid-frame,
+	    tagline + actions at the bottom */}
+	{variant === 'photo' ? (
+		<div class="hero-content hero-content--split">
+			<img
+				class="hero-logo hero-logo--transparent"
+				src="/images/uploads/jlb_logo_transparent.png"
+				alt={site.bandName}
+				width="1100"
+				height="733"
+				loading="eager"
+			/>
+			<h1 class="visually-hidden">{site.bandName}</h1>
+			<div class="hero-bottom">
+				<p class="hero-tagline">{site.tagline}</p>
+				<div class="hero-actions">
+					<a class="btn btn--solid" href="/#shows">Upcoming shows</a>
+					<a class="btn" href="/#contact">Join the mailing list</a>
+				</div>
+			</div>
 		</div>
-	</div>
+	) : (
+		<div class="hero-content">
+			{variant === 'cinematic' ? (
+				<>
+					<img
+						class="hero-logo hero-logo--small"
+						src="/images/uploads/JLB_Logo.jpg"
+						alt=""
+						width="160"
+						height="126"
+						loading="eager"
+					/>
+					<h1 class="hero-name">{site.bandName}</h1>
+				</>
+			) : (
+				<>
+					<img
+						class="hero-logo"
+						src="/images/uploads/JLB_Logo.jpg"
+						alt={site.bandName}
+						width="420"
+						height="330"
+						loading="eager"
+					/>
+					<h1 class="visually-hidden">{site.bandName}</h1>
+				</>
+			)}
+			<p class="hero-tagline">{site.tagline}</p>
+			<div class="hero-actions">
+				<a class="btn btn--solid" href="/#shows">Upcoming shows</a>
+				<a class="btn" href="/#contact">Join the mailing list</a>
+			</div>
+		</div>
+	)}
 
 	<a class="hero-scroll" href="/#shows" aria-label="Scroll down">
 		<span></span>
@@ -82,6 +105,7 @@ const { variant = 'logo' } = Astro.props;
 
 	.hero-bg--photo {
 		background-image: url('/images/uploads/BW_band.jpg');
+		background-position: center 35%;
 	}
 
 	.hero-bg--cinematic {
@@ -97,10 +121,18 @@ const { variant = 'logo' } = Astro.props;
 		.hero-bg { animation: none; }
 	}
 
+	/* Keep the middle of the frame (faces) bright; darken top for the nav and
+	   bottom for the tagline/buttons. */
 	.hero--photo .hero-overlay {
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(rgba(11, 10, 8, 0.55), rgba(11, 10, 8, 0.82));
+		background: linear-gradient(
+			180deg,
+			rgba(11, 10, 8, 0.5) 0%,
+			rgba(11, 10, 8, 0.12) 32%,
+			rgba(11, 10, 8, 0.18) 58%,
+			rgba(11, 10, 8, 0.88) 100%
+		);
 	}
 
 	.hero--cinematic .hero-overlay {
@@ -132,6 +164,31 @@ const { variant = 'logo' } = Astro.props;
 	.hero-logo--small {
 		width: 150px;
 		margin-bottom: 0.6rem;
+	}
+
+	/* --- 'photo' variant: logo top, faces clear, actions bottom --- */
+	.hero--photo {
+		align-items: stretch;
+		padding-bottom: 0;
+	}
+
+	.hero-content--split {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+	}
+
+	.hero-logo--transparent {
+		width: min(360px, 64vw);
+		height: auto;
+		mix-blend-mode: normal;
+		filter: drop-shadow(0 6px 26px rgba(0, 0, 0, 0.55)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+	}
+
+	.hero-bottom {
+		margin-bottom: 5.5rem;
 	}
 
 	.hero-name {
