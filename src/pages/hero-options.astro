@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+
+// Internal preview page: shows all three landing-screen options stacked so the
+// band can pick a favorite. Not linked from the nav; safe to delete once chosen.
+---
+
+<Layout title="Landing screen options — pick one!">
+	<div class="opt-note">
+		<p>
+			<strong>Preview page.</strong> Scroll through the three landing-screen
+			options below and tell Will which one you like. This page isn't linked
+			from the site.
+		</p>
+	</div>
+
+	<div class="opt">
+		<p class="opt-label">Option A — “Logo on black” <em>(currently live)</em></p>
+		<Hero variant="logo" />
+	</div>
+
+	<div class="opt">
+		<p class="opt-label">Option B — “Band photo backdrop” (black &amp; white, slow zoom)</p>
+		<Hero variant="photo" />
+	</div>
+
+	<div class="opt">
+		<p class="opt-label">Option C — “Cinematic color” (outdoor photo, name in type)</p>
+		<Hero variant="cinematic" />
+	</div>
+</Layout>
+
+<style>
+	.opt-note {
+		padding: 7rem 1.5rem 1rem;
+		max-width: 44rem;
+		margin: 0 auto;
+		text-align: center;
+		color: var(--cream-dim);
+	}
+
+	.opt-label {
+		padding: 2.5rem 1.5rem 1rem;
+		text-align: center;
+		font-size: 1.05rem;
+		color: var(--gold-bright);
+		letter-spacing: 0.06em;
+		border-top: 1px solid var(--line);
+	}
+
+	.opt-label em {
+		color: var(--cream-dim);
+	}
+</style>

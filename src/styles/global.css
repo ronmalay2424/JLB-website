@@ -1,0 +1,175 @@
+/* ===== Jenny Labow Band — design system =====
+   Palette drawn from the JLB logo: aged gold on near-black, with warm cream
+   text and faint botanical accents. */
+
+:root {
+	--bg: #0b0a08;
+	--bg-raised: #14120e;
+	--bg-card: #191612;
+	--line: #2b261e;
+	--gold: #c9a35f;
+	--gold-bright: #e8c988;
+	--gold-dim: #8a713f;
+	--cream: #f3ead8;
+	--cream-dim: #b3a888;
+	--max-w: 72rem;
+	--font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+	--font-body: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 5rem;
+}
+
+body {
+	background: var(--bg);
+	color: var(--cream);
+	font-family: var(--font-body);
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+}
+
+img {
+	max-width: 100%;
+	display: block;
+}
+
+h1, h2, h3 {
+	font-family: var(--font-display);
+	font-weight: 600;
+	line-height: 1.15;
+	color: var(--cream);
+}
+
+a {
+	color: var(--gold-bright);
+}
+
+/* ---- shared section shell ---- */
+.section {
+	padding: 5.5rem 1.5rem;
+}
+
+.section-inner {
+	max-width: var(--max-w);
+	margin: 0 auto;
+}
+
+.section-title {
+	font-size: clamp(2.1rem, 5vw, 3rem);
+	text-align: center;
+	letter-spacing: 0.02em;
+}
+
+.section-title::after {
+	content: '';
+	display: block;
+	width: 72px;
+	height: 1px;
+	margin: 1.1rem auto 0;
+	background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.section-sub {
+	text-align: center;
+	color: var(--cream-dim);
+	max-width: 38rem;
+	margin: 1.1rem auto 0;
+}
+
+/* ---- buttons ---- */
+.btn {
+	display: inline-block;
+	padding: 0.8rem 2rem;
+	border: 1px solid var(--gold);
+	border-radius: 2px;
+	background: transparent;
+	color: var(--gold-bright);
+	font-family: var(--font-body);
+	font-size: 0.95rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.btn:hover {
+	background: var(--gold);
+	color: #14110b;
+	box-shadow: 0 0 24px rgba(201, 163, 95, 0.35);
+}
+
+.btn--solid {
+	background: var(--gold);
+	color: #14110b;
+}
+
+.btn--solid:hover {
+	background: var(--gold-bright);
+}
+
+/* ---- scroll-reveal animation (elements get .visible from JS) ---- */
+.reveal {
+	opacity: 0;
+	transform: translateY(26px);
+	transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html { scroll-behavior: auto; }
+	.reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---- forms ---- */
+.field {
+	display: block;
+	width: 100%;
+	padding: 0.85rem 1rem;
+	background: var(--bg-raised);
+	border: 1px solid var(--line);
+	border-radius: 2px;
+	color: var(--cream);
+	font-family: var(--font-body);
+	font-size: 1rem;
+	transition: border-color 0.2s;
+}
+
+.field:focus {
+	outline: none;
+	border-color: var(--gold);
+}
+
+.field::placeholder {
+	color: #6f6552;
+}
+
+/* honeypot — visually gone, still in the DOM for bots to fill */
+.hp-field {
+	position: absolute !important;
+	left: -9999px !important;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+.form-note {
+	font-size: 0.95rem;
+	min-height: 1.4rem;
+	margin-top: 0.75rem;
+}
+
+.form-note.err { color: #e08f7a; }
+.form-note.okay { color: #a9c49a; }

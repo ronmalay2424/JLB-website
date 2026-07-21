@@ -1,8 +1,9 @@
 # JLB Website
 
-The website for JLB (a band), built to run on Cloudflare. The **frontend is not
-built yet** — this repo currently contains the backend, content model, and CMS so
-everything is ready to plug a design into later.
+The website for the Jenny Labow Band, built to run on Cloudflare. The repo
+contains the full site: frontend (dark/gold design drawn from the band logo),
+backend, content model, and CMS. Remaining setup: Resend email, CMS login, and
+the custom domain (see the checklist below).
 
 ---
 

@@ -1,9 +1,10 @@
 ---
 title: About
-heroImage: /images/uploads/placeholder.svg
+heroImage: /images/uploads/band_outside_color.jpg
 ---
 
-Write the band bio here. This page is editable in the CMS at /admin.
+The Jenny Labow Band brings together five seasoned musicians with one simple
+goal: keep the dance floor full. Expect a night that moves between the covers
+everybody sings along to and originals with a story of their own.
 
-Tell the story: who's in the band, the sound, where you play, and anything a
-first-time listener should know.
+*This bio is a placeholder — edit it in the CMS at /admin.*

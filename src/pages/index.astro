@@ -1,17 +1,554 @@
 ---
+import { getCollection, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import site from '../data/site.json';
 
+// Static page: rebuilt on deploy (and on every CMS save once auto-deploy is on).
+const now = new Date();
+const shows = (await getCollection('shows'))
+	.filter((s) => s.data.date >= now)
+	.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+
+const members = (await getCollection('members')).sort((a, b) => a.data.order - b.data.order);
+
+const gallery = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+
+const pages = await getCollection('pages');
+const about = pages.find((p) => p.id === 'about');
+const AboutContent = about ? (await render(about)).Content : null;
+
+const streaming = Object.entries(site.streaming).filter(([, url]) => url);
+
+const fmtDate = (d: Date) =>
+	d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+const fmtTime = (d: Date) =>
+	d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+	<Hero variant="logo" />
+
+	<!-- ============ SHOWS ============ -->
+	<section class="section" id="shows">
+		<div class="section-inner">
+			<h2 class="section-title reveal">Upcoming Shows</h2>
+			{shows.length === 0 ? (
+				<div class="shows-empty reveal">
+					<p>No shows on the calendar right now — new dates are coming.</p>
+					<p>
+						<a class="btn" href="/#contact">Get notified about new shows</a>
+					</p>
+				</div>
+			) : (
+				<ol class="show-list">
+					{shows.map((show) => (
+						<li class="show reveal">
+							<div class="show-date">
+								<span class="show-day">{show.data.date.getDate()}</span>
+								<span class="show-month">
+									{show.data.date.toLocaleDateString('en-US', { month: 'short' })}
+								</span>
+							</div>
+							<div class="show-info">
+								<h3>{show.data.title}</h3>
+								<p class="show-meta">
+									{show.data.venue} · {show.data.city}
+								</p>
+								<p class="show-meta show-meta--dim">
+									{fmtDate(show.data.date)} · {fmtTime(show.data.date)}
+									{show.data.price && ` · ${show.data.price}`}
+									{show.data.ageRestriction && ` · ${show.data.ageRestriction}`}
+								</p>
+							</div>
+							<div class="show-cta">
+								{show.data.soldOut ? (
+									<span class="soldout">Sold out</span>
+								) : (
+									show.data.ticketUrl && (
+										<a class="btn" href={show.data.ticketUrl} target="_blank" rel="noopener">
+											Tickets
+										</a>
+									)
+								)}
+							</div>
+						</li>
+					))}
+				</ol>
+			)}
+		</div>
+	</section>
+
+	<!-- ============ ABOUT ============ -->
+	<section class="section section--raised" id="about">
+		<div class="section-inner">
+			<h2 class="section-title reveal">The Band</h2>
+			{AboutContent && (
+				<div class="about-copy reveal">
+					<AboutContent />
+				</div>
+			)}
+			<div class="member-grid">
+				{members.map((m) => (
+					<figure class="member reveal">
+						<div class="member-photo">
+							<img src={m.data.photo} alt={m.data.name} loading="lazy" />
+						</div>
+						<figcaption>
+							<strong>{m.data.name}</strong>
+							{m.data.role && <span>{m.data.role}</span>}
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ GALLERY ============ -->
+	<section class="section" id="gallery">
+		<div class="section-inner">
+			<h2 class="section-title reveal">Gallery</h2>
+			<div class="gallery-grid">
+				{gallery.map((photo, i) => (
+					<button
+						class="gallery-item reveal"
+						data-lightbox={photo.data.image}
+						data-caption={photo.data.caption ?? ''}
+						aria-label={`View photo: ${photo.data.alt}`}
+					>
+						<img
+							src={photo.data.image}
+							alt={photo.data.alt}
+							loading={i < 3 ? 'eager' : 'lazy'}
+						/>
+					</button>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ MUSIC ============ -->
+	<section class="section section--raised" id="music">
+		<div class="section-inner">
+			<h2 class="section-title reveal">Music</h2>
+			{streaming.length > 0 ? (
+				<div class="stream-links reveal">
+					{streaming.map(([name, url]) => (
+						<a class="btn" href={url} target="_blank" rel="noopener">
+							{name === 'appleMusic' ? 'Apple Music' : name}
+						</a>
+					))}
+				</div>
+			) : (
+				<p class="section-sub reveal">
+					Recordings are on the way. Join the mailing list below and be the first to hear them.
+				</p>
+			)}
+		</div>
+	</section>
+
+	<!-- ============ CONTACT ============ -->
+	<section class="section" id="contact">
+		<div class="section-inner contact-grid">
+			<div class="reveal">
+				<h2 class="contact-title">Stay in the loop</h2>
+				<p class="contact-sub">
+					Show announcements and new music — no spam, unsubscribe anytime.
+				</p>
+				<form id="subscribe-form" novalidate>
+					<div class="hp-field" aria-hidden="true">
+						<label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+					</div>
+					<div class="subscribe-row">
+						<input class="field" type="email" name="email" placeholder="your@email.com" required />
+						<button class="btn btn--solid" type="submit">Sign up</button>
+					</div>
+					<p class="form-note" role="status"></p>
+				</form>
+			</div>
+
+			<div class="reveal">
+				<h2 class="contact-title">Bookings &amp; hellos</h2>
+				<p class="contact-sub">Want the band at your venue or event? Drop a line.</p>
+				<form id="contact-form" novalidate>
+					<div class="hp-field" aria-hidden="true">
+						<label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+					</div>
+					<div class="contact-fields">
+						<input class="field" type="text" name="name" placeholder="Your name" required />
+						<input class="field" type="email" name="email" placeholder="Your email" required />
+						<input class="field" type="text" name="subject" placeholder="Subject (optional)" />
+						<textarea class="field" name="message" rows="5" placeholder="Your message" required></textarea>
+					</div>
+					<button class="btn btn--solid" type="submit">Send message</button>
+					<p class="form-note" role="status"></p>
+				</form>
+			</div>
+		</div>
+	</section>
+
+	<!-- ============ LIGHTBOX ============ -->
+	<div class="lightbox" id="lightbox" hidden>
+		<button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+		<img id="lightbox-img" src="" alt="" />
+		<p class="lightbox-caption" id="lightbox-caption"></p>
+	</div>
+</Layout>
+
+<script>
+	// ---- Lightbox ----
+	const lb = document.getElementById('lightbox') as HTMLElement;
+	const lbImg = document.getElementById('lightbox-img') as HTMLImageElement;
+	const lbCap = document.getElementById('lightbox-caption') as HTMLElement;
+
+	document.querySelectorAll<HTMLElement>('[data-lightbox]').forEach((el) => {
+		el.addEventListener('click', () => {
+			lbImg.src = el.dataset.lightbox!;
+			lbImg.alt = el.querySelector('img')?.alt ?? '';
+			lbCap.textContent = el.dataset.caption ?? '';
+			lb.hidden = false;
+			document.body.style.overflow = 'hidden';
+		});
+	});
+
+	const closeLightbox = () => {
+		lb.hidden = true;
+		lbImg.src = '';
+		document.body.style.overflow = '';
+	};
+
+	document.getElementById('lightbox-close')!.addEventListener('click', closeLightbox);
+	lb.addEventListener('click', (e) => {
+		if (e.target === lb) closeLightbox();
+	});
+	window.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && !lb.hidden) closeLightbox();
+	});
+
+	// ---- Forms ----
+	async function wireForm(formId: string, endpoint: string, successFallback: string) {
+		const form = document.getElementById(formId) as HTMLFormElement | null;
+		if (!form) return;
+		const note = form.querySelector('.form-note') as HTMLElement;
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			note.className = 'form-note';
+			note.textContent = 'Sending…';
+
+			const data = Object.fromEntries(new FormData(form).entries());
+			try {
+				const res = await fetch(endpoint, {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify(data),
+				});
+				const out = (await res.json()) as { ok: boolean; message?: string; error?: string };
+				if (out.ok) {
+					note.className = 'form-note okay';
+					note.textContent = out.message ?? successFallback;
+					form.reset();
+				} else {
+					note.className = 'form-note err';
+					note.textContent = out.error ?? 'Something went wrong. Please try again.';
+				}
+			} catch {
+				note.className = 'form-note err';
+				note.textContent = 'Network error. Please try again.';
+			}
+		});
+	}
+
+	wireForm('subscribe-form', '/api/subscribe', 'Check your email to confirm.');
+	wireForm('contact-form', '/api/contact', 'Message sent — thank you!');
+</script>
+
+<style>
+	.section--raised {
+		background: var(--bg-raised);
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+
+	/* ---- shows ---- */
+	.shows-empty {
+		text-align: center;
+		color: var(--cream-dim);
+		margin-top: 2.5rem;
+	}
+
+	.shows-empty .btn {
+		margin-top: 1rem;
+	}
+
+	.show-list {
+		list-style: none;
+		margin-top: 3rem;
+		display: grid;
+		gap: 1rem;
+	}
+
+	.show {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		padding: 1.4rem 1.6rem;
+		background: var(--bg-card);
+		border: 1px solid var(--line);
+		border-radius: 3px;
+		transition: border-color 0.25s, transform 0.25s;
+	}
+
+	.show:hover {
+		border-color: var(--gold-dim);
+		transform: translateY(-2px);
+	}
+
+	.show-date {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-width: 4rem;
+		font-family: var(--font-display);
+		color: var(--gold-bright);
+	}
+
+	.show-day {
+		font-size: 2.1rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.show-month {
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		font-size: 0.85rem;
+	}
+
+	.show-info {
+		flex: 1;
+	}
+
+	.show-info h3 {
+		font-size: 1.45rem;
+	}
+
+	.show-meta {
+		color: var(--cream-dim);
+	}
+
+	.show-meta--dim {
+		font-size: 0.9rem;
+		color: #7d7359;
+	}
+
+	.soldout {
+		color: #e08f7a;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		font-size: 0.85rem;
+	}
+
+	@media (max-width: 640px) {
+		.show {
+			flex-direction: column;
+			text-align: center;
+			gap: 0.8rem;
+		}
+	}
+
+	/* ---- about ---- */
+	.about-copy {
+		max-width: 44rem;
+		margin: 2.2rem auto 0;
+		text-align: center;
+		color: var(--cream-dim);
+		font-size: 1.08rem;
+	}
+
+	.member-grid {
+		margin-top: 3.2rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+		gap: 1.6rem;
+		max-width: 62rem;
+		margin-inline: auto;
+	}
+
+	.member {
+		text-align: center;
+	}
+
+	.member-photo {
+		overflow: hidden;
+		border-radius: 3px;
+		border: 1px solid var(--line);
+		aspect-ratio: 4 / 5;
+	}
+
+	.member-photo img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top center;
+		filter: grayscale(35%);
+		transition: filter 0.35s, transform 0.35s;
+	}
+
+	.member:hover .member-photo img {
+		filter: none;
+		transform: scale(1.04);
+	}
+
+	.member figcaption {
+		margin-top: 0.8rem;
+	}
+
+	.member strong {
+		display: block;
+		font-family: var(--font-display);
+		font-size: 1.2rem;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+	}
+
+	.member span {
+		color: var(--cream-dim);
+		font-size: 0.9rem;
+	}
+
+	/* ---- gallery ---- */
+	.gallery-grid {
+		margin-top: 3rem;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+		gap: 0.8rem;
+	}
+
+	.gallery-item {
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: 3px;
+		background: none;
+		cursor: zoom-in;
+		overflow: hidden;
+		aspect-ratio: 3 / 2;
+	}
+
+	.gallery-item img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.4s ease, opacity 0.4s;
+	}
+
+	.gallery-item:hover img {
+		transform: scale(1.05);
+		opacity: 0.85;
+	}
+
+	/* ---- music ---- */
+	.stream-links {
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 1rem;
+		margin-top: 2.4rem;
+		text-transform: capitalize;
+	}
+
+	/* ---- contact ---- */
+	.contact-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 4rem;
+	}
+
+	@media (max-width: 820px) {
+		.contact-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	.contact-title {
+		font-size: 1.9rem;
+	}
+
+	.contact-sub {
+		color: var(--cream-dim);
+		margin: 0.6rem 0 1.4rem;
+	}
+
+	.subscribe-row {
+		display: flex;
+		gap: 0.7rem;
+	}
+
+	.subscribe-row .field {
+		flex: 1;
+	}
+
+	@media (max-width: 480px) {
+		.subscribe-row {
+			flex-direction: column;
+		}
+	}
+
+	.contact-fields {
+		display: grid;
+		gap: 0.8rem;
+		margin-bottom: 1rem;
+	}
+
+	textarea.field {
+		resize: vertical;
+	}
+
+	/* ---- lightbox ---- */
+	.lightbox[hidden] {
+		display: none;
+	}
+
+	.lightbox {
+		position: fixed;
+		inset: 0;
+		z-index: 200;
+		background: rgba(5, 4, 3, 0.93);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 3rem 1.5rem;
+	}
+
+	.lightbox img {
+		max-width: min(92vw, 1100px);
+		max-height: 80vh;
+		object-fit: contain;
+		border: 1px solid var(--line);
+	}
+
+	.lightbox-caption {
+		margin-top: 1rem;
+		color: var(--cream-dim);
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: 1.1rem;
+	}
+
+	.lightbox-close {
+		position: absolute;
+		top: 1.2rem;
+		right: 1.6rem;
+		background: none;
+		border: none;
+		color: var(--cream);
+		font-size: 2.6rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.lightbox-close:hover {
+		color: var(--gold-bright);
+	}
+</style>

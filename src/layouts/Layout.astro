@@ -1,0 +1,231 @@
+---
+import '@fontsource/cormorant-garamond/500.css';
+import '@fontsource/cormorant-garamond/600.css';
+import '@fontsource/cormorant-garamond/700.css';
+import '../styles/global.css';
+import site from '../data/site.json';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = `${site.bandName} — Live Music`,
+	description = `${site.bandName}. ${site.tagline}`,
+} = Astro.props;
+
+const nav = [
+	{ href: '/#shows', label: 'Shows' },
+	{ href: '/#about', label: 'About' },
+	{ href: '/#gallery', label: 'Gallery' },
+	{ href: '/#music', label: 'Music' },
+	{ href: '/merch', label: 'Merch' },
+	{ href: '/#contact', label: 'Contact' },
+];
+
+const socials = Object.entries(site.social).filter(([, url]) => url);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content="/images/uploads/BW_band_with_logo.jpg" />
+	</head>
+	<body>
+		<header class="nav" id="site-nav">
+			<a class="nav-brand" href="/">
+				<img src="/images/uploads/JLB_Logo.jpg" alt={site.bandName} width="74" height="58" loading="eager" />
+			</a>
+			<nav class="nav-links" id="nav-links" aria-label="Main">
+				{nav.map((item) => <a href={item.href}>{item.label}</a>)}
+			</nav>
+			<button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+				<span></span><span></span><span></span>
+			</button>
+		</header>
+
+		<main>
+			<slot />
+		</main>
+
+		<footer class="footer">
+			<img class="footer-logo" src="/images/uploads/JLB_Logo.jpg" alt="" width="120" height="94" loading="lazy" />
+			{socials.length > 0 && (
+				<div class="footer-social">
+					{socials.map(([name, url]) => (
+						<a href={url} target="_blank" rel="noopener">{name}</a>
+					))}
+				</div>
+			)}
+			<p class="footer-fine">© {new Date().getFullYear()} {site.bandName}</p>
+		</footer>
+
+		<script>
+			// Mobile nav toggle
+			const toggle = document.getElementById('nav-toggle')!;
+			const links = document.getElementById('nav-links')!;
+			toggle.addEventListener('click', () => {
+				const open = links.classList.toggle('open');
+				toggle.setAttribute('aria-expanded', String(open));
+			});
+			links.addEventListener('click', (e) => {
+				if ((e.target as HTMLElement).tagName === 'A') {
+					links.classList.remove('open');
+					toggle.setAttribute('aria-expanded', 'false');
+				}
+			});
+
+			// Nav background solidifies once scrolled past the top
+			const navEl = document.getElementById('site-nav')!;
+			const onScroll = () => navEl.classList.toggle('scrolled', window.scrollY > 40);
+			onScroll();
+			window.addEventListener('scroll', onScroll, { passive: true });
+
+			// Scroll-reveal
+			const observer = new IntersectionObserver(
+				(entries) => {
+					for (const entry of entries) {
+						if (entry.isIntersecting) {
+							entry.target.classList.add('visible');
+							observer.unobserve(entry.target);
+						}
+					}
+				},
+				{ threshold: 0.12 },
+			);
+			document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+		</script>
+
+		<style>
+			.nav {
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				z-index: 100;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0.6rem 1.5rem;
+				background: linear-gradient(rgba(11, 10, 8, 0.85), rgba(11, 10, 8, 0));
+				transition: background 0.3s;
+			}
+
+			.nav.scrolled {
+				background: rgba(11, 10, 8, 0.94);
+				border-bottom: 1px solid var(--line);
+			}
+
+			.nav-brand img {
+				width: 74px;
+				height: auto;
+				mix-blend-mode: screen; /* hides the JPG's black box on dark bg */
+			}
+
+			.nav-links {
+				display: flex;
+				gap: 2rem;
+			}
+
+			.nav-links a {
+				color: var(--cream);
+				text-decoration: none;
+				font-size: 0.88rem;
+				letter-spacing: 0.18em;
+				text-transform: uppercase;
+				transition: color 0.2s;
+			}
+
+			.nav-links a:hover {
+				color: var(--gold-bright);
+			}
+
+			.nav-toggle {
+				display: none;
+				flex-direction: column;
+				gap: 5px;
+				background: none;
+				border: none;
+				padding: 0.5rem;
+				cursor: pointer;
+			}
+
+			.nav-toggle span {
+				width: 24px;
+				height: 2px;
+				background: var(--gold);
+			}
+
+			@media (max-width: 820px) {
+				.nav-toggle {
+					display: flex;
+				}
+
+				.nav-links {
+					position: absolute;
+					top: 100%;
+					left: 0;
+					right: 0;
+					flex-direction: column;
+					gap: 0;
+					background: rgba(11, 10, 8, 0.98);
+					border-bottom: 1px solid var(--line);
+					max-height: 0;
+					overflow: hidden;
+					transition: max-height 0.3s ease;
+				}
+
+				.nav-links.open {
+					max-height: 22rem;
+				}
+
+				.nav-links a {
+					padding: 0.95rem 1.5rem;
+					border-top: 1px solid var(--line);
+				}
+			}
+
+			.footer {
+				border-top: 1px solid var(--line);
+				padding: 3rem 1.5rem 2.5rem;
+				text-align: center;
+			}
+
+			.footer-logo {
+				margin: 0 auto 1rem;
+				mix-blend-mode: screen;
+				opacity: 0.9;
+			}
+
+			.footer-social {
+				display: flex;
+				justify-content: center;
+				gap: 1.5rem;
+				margin-bottom: 1rem;
+			}
+
+			.footer-social a {
+				color: var(--cream-dim);
+				text-transform: capitalize;
+				text-decoration: none;
+			}
+
+			.footer-social a:hover {
+				color: var(--gold-bright);
+			}
+
+			.footer-fine {
+				color: #6f6552;
+				font-size: 0.85rem;
+			}
+		</style>
+	</body>
+</html>

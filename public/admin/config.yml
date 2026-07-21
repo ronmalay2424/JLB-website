@@ -3,8 +3,7 @@
 
 backend:
   name: github
-  # TODO: set to your GitHub repo once it's pushed, e.g. willmalay/jlb-website
-  repo: REPLACE_GITHUB_OWNER/REPLACE_GITHUB_REPO
+  repo: ronmalay2424/JLB-website
   branch: main
   # OAuth relay so editors can log in with GitHub. Deploy the sveltia-cms-auth
   # Worker (see README → "CMS login") and paste its URL here.
@@ -87,6 +86,23 @@ collections:
       - { name: caption, label: Caption, widget: string, required: false }
       - { name: featured, label: Featured?, widget: boolean, default: false }
       - { name: order, label: Sort order, widget: number, value_type: int, default: 0 }
+
+  # --- Band members ---
+  - name: members
+    label: Band Members
+    label_singular: Member
+    folder: "src/content/members"
+    create: true
+    slug: "{{fields.order}}-{{slug}}"
+    identifier_field: name
+    summary: "{{fields.name}}"
+    sortable_fields: [order]
+    fields:
+      - { name: name, label: Name, widget: string }
+      - { name: photo, label: Photo, widget: image }
+      - { name: role, label: "Role / instrument", widget: string, required: false }
+      - { name: order, label: Sort order, widget: number, value_type: int, default: 0 }
+      - { name: body, label: Bio, widget: markdown, required: false }
 
   # --- Long-form pages (About/bio, press, etc.) ---
   - name: pages

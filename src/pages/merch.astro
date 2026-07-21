@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import site from '../data/site.json';
+---
+
+<Layout title={`Merch — ${site.bandName}`}>
+	<section class="merch">
+		<img
+			class="merch-logo"
+			src="/images/uploads/JLB_Logo.jpg"
+			alt=""
+			width="260"
+			height="205"
+		/>
+		<h1>Merch</h1>
+		<p class="merch-soon">Coming soon<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+		<p class="merch-sub">
+			Shirts and more are in the works. Join the mailing list and you'll be the
+			first to know when the merch table opens.
+		</p>
+		<a class="btn" href="/#contact">Join the mailing list</a>
+	</section>
+</Layout>
+
+<style>
+	.merch {
+		min-height: 100svh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		padding: 6rem 1.5rem 4rem;
+		background:
+			radial-gradient(ellipse 55% 40% at 50% 40%, rgba(201, 163, 95, 0.1), transparent 70%),
+			var(--bg);
+	}
+
+	.merch-logo {
+		width: min(260px, 60vw);
+		height: auto;
+		mix-blend-mode: screen;
+		opacity: 0.9;
+	}
+
+	h1 {
+		font-size: clamp(2.4rem, 6vw, 3.6rem);
+		margin-top: 1.4rem;
+	}
+
+	.merch-soon {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+		color: var(--gold-bright);
+		margin-top: 0.6rem;
+	}
+
+	.dots span {
+		animation: blink 1.6s infinite;
+	}
+
+	.dots span:nth-child(2) { animation-delay: 0.25s; }
+	.dots span:nth-child(3) { animation-delay: 0.5s; }
+
+	@keyframes blink {
+		0%, 100% { opacity: 0.2; }
+		50% { opacity: 1; }
+	}
+
+	.merch-sub {
+		max-width: 26rem;
+		color: var(--cream-dim);
+		margin: 1.2rem 0 2rem;
+	}
+</style>

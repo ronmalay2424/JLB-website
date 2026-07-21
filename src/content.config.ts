@@ -32,6 +32,17 @@ const gallery = defineCollection({
 	}),
 });
 
+// Band members. One file per member; the body is an optional bio.
+const members = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/members' }),
+	schema: z.object({
+		name: z.string(),
+		photo: z.string(),
+		role: z.string().optional(),
+		order: z.number().default(0),
+	}),
+});
+
 // Long-form pages (bio/about, press, etc.). Body is Markdown.
 const pages = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/pages' }),
@@ -41,4 +52,4 @@ const pages = defineCollection({
 	}),
 });
 
-export const collections = { shows, gallery, pages };
+export const collections = { shows, gallery, members, pages };

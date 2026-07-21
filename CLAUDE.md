@@ -30,10 +30,18 @@ architecture and the account/setup checklist.
   must be kept in sync.
 - Files use tab indentation (matches the Astro scaffold).
 
+## Frontend
+
+- Design system: dark/gold palette drawn from the JLB logo, defined in
+  `src/styles/global.css`; display font is Cormorant Garamond (self-hosted via
+  @fontsource). Layout/nav/footer in `src/layouts/Layout.astro`.
+- The landing hero (`src/components/Hero.astro`) has three variants; `/hero-options`
+  previews all of them (delete that page once the band picks one).
+- Band photos live in `public/images/uploads/` (also the CMS media folder).
+
 ## Not built yet
 
-- The public-facing pages/design (only `src/pages/index.astro` placeholder exists).
-- Merch/store — deferred; see README → "Adding merch later".
+- Merch/store — `/merch` is a "coming soon" page; see README → "Adding merch later".
 
 ## Astro docs
 
