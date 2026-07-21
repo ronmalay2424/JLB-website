@@ -5,9 +5,8 @@ backend:
   name: github
   repo: ronmalay2424/JLB-website
   branch: main
-  # OAuth relay so editors can log in with GitHub. Deploy the sveltia-cms-auth
-  # Worker (see README → "CMS login") and paste its URL here.
-  base_url: https://REPLACE_WITH_SVELTIA_AUTH_WORKER
+  # OAuth relay so editors can log in with GitHub (sveltia-cms-auth Worker).
+  base_url: https://sveltia-cms-auth.ronmalay2424.workers.dev
 
 # Uploaded images are committed to the repo here and referenced by this path.
 media_folder: "public/images/uploads"
