@@ -10,10 +10,17 @@ const shows = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/shows' }),
 	schema: z.object({
 		title: z.string(),
-		date: z.coerce.date(),
+		// Naive wall time from the CMS. YAML timestamps already parse as UTC;
+		// if it arrives as a string, pin it to UTC too so display (which
+		// formats in UTC) always echoes exactly what was typed.
+		date: z.preprocess(
+			(v) => (typeof v === 'string' && !/(Z|[+-]\d{2}:?\d{2})$/.test(v) ? `${v}Z` : v),
+			z.coerce.date(),
+		),
 		venue: z.string(),
 		city: z.string(),
-		ticketUrl: z.string().url().optional(),
+		// The CMS saves an emptied field as '' — accept that as "no link".
+		ticketUrl: z.string().url().optional().or(z.literal('')),
 		price: z.string().optional(),
 		ageRestriction: z.string().optional(),
 		soldOut: z.boolean().default(false),

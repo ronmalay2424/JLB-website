@@ -4,10 +4,17 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import site from '../data/site.json';
 
-// Static page: rebuilt on deploy (and on every CMS save once auto-deploy is on).
+// Static page: rebuilt on deploy (and on every CMS save via auto-build).
+//
+// Show dates are naive wall times ("2026-09-17T19:00:00", no timezone); YAML
+// parses them as UTC. All display formatting below therefore uses the UTC
+// timezone to echo back exactly what was typed in the CMS, regardless of the
+// build machine's timezone.
 const now = new Date();
+// Keep a show listed through (and one day past) the day of the gig.
+const cutoff = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - 86_400_000);
 const shows = (await getCollection('shows'))
-	.filter((s) => s.data.date >= now)
+	.filter((s) => s.data.date >= cutoff)
 	.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
 
 const members = (await getCollection('members')).sort((a, b) => a.data.order - b.data.order);
@@ -21,9 +28,11 @@ const AboutContent = about ? (await render(about)).Content : null;
 const streaming = Object.entries(site.streaming).filter(([, url]) => url);
 
 const fmtDate = (d: Date) =>
-	d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+	d.toLocaleDateString('en-US', {
+		weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+	});
 const fmtTime = (d: Date) =>
-	d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+	d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'UTC' });
 ---
 
 <Layout>
@@ -45,9 +54,9 @@ const fmtTime = (d: Date) =>
 					{shows.map((show) => (
 						<li class="show reveal">
 							<div class="show-date">
-								<span class="show-day">{show.data.date.getDate()}</span>
+								<span class="show-day">{show.data.date.getUTCDate()}</span>
 								<span class="show-month">
-									{show.data.date.toLocaleDateString('en-US', { month: 'short' })}
+									{show.data.date.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })}
 								</span>
 							</div>
 							<div class="show-info">
