@@ -20,15 +20,17 @@ const { variant = 'logo' } = Astro.props;
 	    tagline + actions at the bottom */}
 	{variant === 'photo' || variant === 'photo-color' ? (
 		<div class="hero-content hero-content--split">
-			<img
-				class="hero-logo hero-logo--transparent"
-				src="/images/uploads/jlb_logo_transparent.png"
-				alt={site.bandName}
-				width="1100"
-				height="733"
-				loading="eager"
-			/>
-			<h1 class="visually-hidden">{site.bandName}</h1>
+			<div class="hero-top">
+				<img
+					class="hero-logo hero-logo--monogram"
+					src="/images/uploads/jlb_monogram.png"
+					alt=""
+					width="900"
+					height="473"
+					loading="eager"
+				/>
+				<h1 class="hero-name hero-name--photo">{site.bandName}</h1>
+			</div>
 			<div class="hero-bottom">
 				<p class="hero-tagline">{site.tagline}</p>
 				<div class="hero-actions">
@@ -43,10 +45,10 @@ const { variant = 'logo' } = Astro.props;
 				<>
 					<img
 						class="hero-logo hero-logo--small"
-						src="/images/uploads/JLB_Logo.jpg"
+						src="/images/uploads/jlb_monogram.png"
 						alt=""
-						width="160"
-						height="126"
+						width="900"
+						height="473"
 						loading="eager"
 					/>
 					<h1 class="hero-name">{site.bandName}</h1>
@@ -169,8 +171,10 @@ const { variant = 'logo' } = Astro.props;
 	}
 
 	.hero-logo--small {
-		width: 150px;
+		width: 170px;
 		margin-bottom: 0.6rem;
+		mix-blend-mode: normal;
+		filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.55));
 	}
 
 	/* --- photo variants: logo top, faces clear, actions bottom --- */
@@ -188,11 +192,22 @@ const { variant = 'logo' } = Astro.props;
 		width: 100%;
 	}
 
-	.hero-logo--transparent {
-		width: min(360px, 64vw);
+	.hero-top {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.hero-logo--monogram {
+		width: min(240px, 48vw);
 		height: auto;
 		mix-blend-mode: normal;
 		filter: drop-shadow(0 6px 26px rgba(0, 0, 0, 0.55)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.4));
+	}
+
+	.hero-name--photo {
+		margin-top: 0.7rem;
+		font-size: clamp(2.1rem, 5.5vw, 3.4rem);
 	}
 
 	.hero-bottom {

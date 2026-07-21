@@ -42,7 +42,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 	<body>
 		<header class="nav" id="site-nav">
 			<a class="nav-brand" href="/">
-				<img src="/images/uploads/jlb_logo_transparent.png" alt={site.bandName} width="78" height="52" loading="eager" />
+				<img src="/images/uploads/jlb_monogram.png" alt={site.bandName} width="66" height="35" loading="eager" />
 			</a>
 			<nav class="nav-links" id="nav-links" aria-label="Main">
 				{nav.map((item) => <a href={item.href}>{item.label}</a>)}
@@ -57,7 +57,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 		</main>
 
 		<footer class="footer">
-			<img class="footer-logo" src="/images/uploads/jlb_logo_transparent.png" alt="" width="140" height="93" loading="lazy" />
+			<img class="footer-logo" src="/images/uploads/jlb_monogram.png" alt="" width="150" height="79" loading="lazy" />
 			{socials.length > 0 && (
 				<div class="footer-social">
 					{socials.map(([name, url]) => (
@@ -125,7 +125,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 			}
 
 			.nav-brand img {
-				width: 78px;
+				width: 66px;
 				height: auto;
 				/* lift the gold artwork off the dark nav */
 				filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6)) brightness(1.12);
