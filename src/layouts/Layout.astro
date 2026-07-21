@@ -42,7 +42,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 	<body>
 		<header class="nav" id="site-nav">
 			<a class="nav-brand" href="/">
-				<img src="/images/uploads/JLB_Logo.jpg" alt={site.bandName} width="74" height="58" loading="eager" />
+				<img src="/images/uploads/jlb_logo_transparent.png" alt={site.bandName} width="78" height="52" loading="eager" />
 			</a>
 			<nav class="nav-links" id="nav-links" aria-label="Main">
 				{nav.map((item) => <a href={item.href}>{item.label}</a>)}
@@ -57,7 +57,7 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 		</main>
 
 		<footer class="footer">
-			<img class="footer-logo" src="/images/uploads/JLB_Logo.jpg" alt="" width="120" height="94" loading="lazy" />
+			<img class="footer-logo" src="/images/uploads/jlb_logo_transparent.png" alt="" width="140" height="93" loading="lazy" />
 			{socials.length > 0 && (
 				<div class="footer-social">
 					{socials.map(([name, url]) => (
@@ -125,9 +125,10 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 			}
 
 			.nav-brand img {
-				width: 74px;
+				width: 78px;
 				height: auto;
-				mix-blend-mode: screen; /* hides the JPG's black box on dark bg */
+				/* lift the gold artwork off the dark nav */
+				filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6)) brightness(1.12);
 			}
 
 			.nav-links {
@@ -201,8 +202,8 @@ const socials = Object.entries(site.social).filter(([, url]) => url);
 
 			.footer-logo {
 				margin: 0 auto 1rem;
-				mix-blend-mode: screen;
-				opacity: 0.9;
+				filter: brightness(1.12);
+				opacity: 0.92;
 			}
 
 			.footer-social {

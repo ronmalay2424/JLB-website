@@ -4,7 +4,7 @@ import site from '../data/site.json';
 // Three interchangeable landing-screen treatments. The homepage picks one;
 // /hero-options previews all of them so the band can choose.
 interface Props {
-	variant?: 'logo' | 'photo' | 'cinematic';
+	variant?: 'logo' | 'photo' | 'photo-color' | 'cinematic';
 }
 
 const { variant = 'logo' } = Astro.props;
@@ -12,12 +12,13 @@ const { variant = 'logo' } = Astro.props;
 
 <section class:list={['hero', `hero--${variant}`]}>
 	{variant === 'photo' && <div class="hero-bg hero-bg--photo" aria-hidden="true" />}
+	{variant === 'photo-color' && <div class="hero-bg hero-bg--photo-color" aria-hidden="true" />}
 	{variant === 'cinematic' && <div class="hero-bg hero-bg--cinematic" aria-hidden="true" />}
 	<div class="hero-overlay" aria-hidden="true" />
 
-	{/* photo variant: transparent logo up top, faces clear mid-frame,
+	{/* photo variants: transparent logo up top, faces clear mid-frame,
 	    tagline + actions at the bottom */}
-	{variant === 'photo' ? (
+	{variant === 'photo' || variant === 'photo-color' ? (
 		<div class="hero-content hero-content--split">
 			<img
 				class="hero-logo hero-logo--transparent"
@@ -108,6 +109,11 @@ const { variant = 'logo' } = Astro.props;
 		background-position: center 35%;
 	}
 
+	.hero-bg--photo-color {
+		background-image: url('/images/uploads/band_outside_color.jpg');
+		background-position: center 35%;
+	}
+
 	.hero-bg--cinematic {
 		background-image: url('/images/uploads/band_outside_color.jpg');
 	}
@@ -123,7 +129,8 @@ const { variant = 'logo' } = Astro.props;
 
 	/* Keep the middle of the frame (faces) bright; darken top for the nav and
 	   bottom for the tagline/buttons. */
-	.hero--photo .hero-overlay {
+	.hero--photo .hero-overlay,
+	.hero--photo-color .hero-overlay {
 		position: absolute;
 		inset: 0;
 		background: linear-gradient(
@@ -166,8 +173,9 @@ const { variant = 'logo' } = Astro.props;
 		margin-bottom: 0.6rem;
 	}
 
-	/* --- 'photo' variant: logo top, faces clear, actions bottom --- */
-	.hero--photo {
+	/* --- photo variants: logo top, faces clear, actions bottom --- */
+	.hero--photo,
+	.hero--photo-color {
 		align-items: stretch;
 		padding-bottom: 0;
 	}
@@ -207,6 +215,7 @@ const { variant = 'logo' } = Astro.props;
 	}
 
 	.hero--photo .hero-tagline,
+	.hero--photo-color .hero-tagline,
 	.hero--cinematic .hero-tagline {
 		color: var(--cream);
 		text-shadow: 0 1px 18px rgba(0, 0, 0, 0.7);
